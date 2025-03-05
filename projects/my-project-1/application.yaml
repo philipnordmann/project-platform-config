@@ -53,7 +53,9 @@ spec:
       values: |
         namespace: "my-project-1"
         nginx:
-          replicas: 10
+          replicas: 2
+        filebrowser:
+          replicas: 1
   destination:
     server: https://kubernetes.default.svc
     namespace: my-project-1
