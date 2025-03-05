@@ -4,7 +4,6 @@ metadata:
   name: my-project-1
   labels:
     team: my-project-1
-
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -45,7 +44,7 @@ spec:
   source:
     repoURL: https://github.com/philipnordmann/project-helm.git
     targetRevision: main
-    path: charts/default-namespace
+    path: charts/default-project
     helm:
       # Use values files from the repository
       valueFiles:
