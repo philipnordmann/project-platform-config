@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-project-1
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/philipnordmann/project-helm.git
+    targetRevision: main
+    path: charts/default-namespace
+    helm:
+      # Use values files from the repository
+      valueFiles:
+        - values.yaml
+      # Additional value overrides
+      values: |
+        namespace: "my-project-1"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-project-1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-project-1
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/philipnordmann/project-helm.git
+    targetRevision: main
+    path: charts/default-project
+    helm:
+      # Use values files from the repository
+      valueFiles:
+        - values.yaml
+      # Additional value overrides
+      values: |
+        namespace: "my-project-1"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-project-1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
