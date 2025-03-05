@@ -52,6 +52,7 @@ spec:
       # Additional value overrides
       values: |
         namespace: "my-project-1"
+        nginx.replicas: 10
   destination:
     server: https://kubernetes.default.svc
     namespace: my-project-1
