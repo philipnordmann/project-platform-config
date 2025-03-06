@@ -1,0 +1,73 @@
+# This is how you would use the namespace-as-a-service chart with ArgoCD
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-project-2-namespace
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/philipnordmann/project-helm.git  # Replace with your Git repo
+    targetRevision: main
+    path: charts/naas  # Path to the chart in your repo
+    helm:
+      valueFiles:
+        - values.yaml
+      values: |
+        namespace:
+          name: "my-project-2"
+          labels:
+            environment: development
+            team: project-team-1
+            cost-center: cc12345
+        
+        rbac:
+          userGroups:
+            - name: "my-project-2-team"
+              kind: Group
+            - name: "project-admin@example.com"
+              kind: User
+          
+          serviceAccounts:
+            - name: project-pipeline
+              createRoleBinding: true
+        
+        networkPolicies:
+          enabled: true
+          defaultDeny: true
+          allowSameNamespace: true
+          
+          ingressRules:
+            - name: web-ingress
+              podSelector:
+                app: nginx
+              namespaceSelector:
+                name: ingress-nginx
+              ports:
+                - protocol: TCP
+                  port: 80
+        
+        resources:
+          limitRange:
+            enabled: true
+          resourceQuota:
+            enabled: true
+            hard:
+              requests.cpu: "4"  # Custom value for this project
+              requests.memory: 4Gi
+              
+        gatekeeper:
+          enabled: true
+          constraints:
+            requiredResources:
+              enabled: true
+            allowedRegistries:
+              enabled: true
+              
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-project-2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
