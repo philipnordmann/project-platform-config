@@ -53,8 +53,9 @@ spec:
           resourceQuota:
             enabled: true
             hard:
-              requests.cpu: "4"  # Custom value for this project
-              requests.memory: 4Gi
+              requests:
+                cpu: "4"  # Custom value for this project
+                memory: 4Gi
               
         gatekeeper:
           enabled: true
